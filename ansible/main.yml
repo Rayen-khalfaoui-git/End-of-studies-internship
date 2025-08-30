@@ -1,0 +1,24 @@
+---
+- name: Configure common prerequisites on all nodes
+  hosts: kubernetes
+  become: true
+  tasks:
+    - include_tasks: tasks/common.yml
+
+- name: Initialize Kubernetes master node
+  hosts: master
+  become: true
+  tasks:
+    - include_tasks: tasks/master.yml
+
+- name: Reset Kubernetes on worker nodes
+  hosts: workers
+  become: true
+  tasks:
+    - include_tasks: tasks/reset.yml
+
+- name: Join Kubernetes cluster from worker nodes
+  hosts: workers
+  become: true
+  tasks:
+    - include_tasks: tasks/worker.yml

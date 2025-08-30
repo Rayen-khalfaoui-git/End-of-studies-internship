@@ -1,0 +1,21 @@
+---
+- name: Reset Kubernetes state
+  command: kubeadm reset -f
+  ignore_errors: yes
+
+- name: Remove Kubernetes and CNI configs
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/cni/net.d
+    - /var/lib/cni
+    - /var/lib/kubelet
+    - /etc/kubernetes
+    - /var/lib/kubeadm.yaml
+  ignore_errors: yes
+
+- name: Restart containerd
+  systemd:
+    name: containerd
+    state: restarted
